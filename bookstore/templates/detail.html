@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="product-detail-container">
+    
+    <div class="breadcrumb">
+        <a href="/">หน้าแรก</a> / <a href="/all-books">หนังสือ</a> / <span>{{ book.title }}</span>
+    </div>
+
+    <div class="product-content">
+        <div class="product-image">
+            <div class="book-cover-large">
+                {% if book.image_url %}
+                    <img src="{{ book.image_url }}" alt="{{ book.title }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/400x600?text={{ book.title }}" alt="{{ book.title }}">
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="product-info">
+            <h1 class="product-title">{{ book.title }}</h1>
+            
+            <div class="product-meta">
+                <p><strong>ผู้เขียน:</strong> {{ book.author if book.author else 'ไม่ระบุ' }}</p>
+                <p><strong>สำนักพิมพ์:</strong> <span class="text-muted">{{ book.publishing_house if book.publishing_house else 'ไม่ระบุ' }}</span></p>
+                <p><strong>หมวดหมู่:</strong> <span class="text-muted">{{ book.category if book.category else 'ไม่ระบุ' }}</span></p>
+                <p><strong>รูปแบบ (Format):</strong> <span class="text-muted">{{ book.format if book.format else 'ไม่ระบุ' }}</span></p>
+                <p><strong>ISBN:</strong> <span class="text-muted">{{ book.isbn if book.isbn else 'ไม่ระบุ' }}</span></p>
+                <p><strong>สถานะสินค้า:</strong> 
+                    {% if book.stock_quantity and book.stock_quantity > 0 %}
+                        <span style="color: #28a745; font-weight: bold;"><i class="fa-solid fa-check-circle"></i> มีสินค้า ({{ book.stock_quantity }} เล่ม)</span>
+                    {% else %}
+                        <span style="color: #d32f2f; font-weight: bold;"><i class="fa-solid fa-xmark-circle"></i> สินค้าหมด</span>
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="rating-section">
+                <div class="stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                </div>
+                <span>4.8 (120 รีวิว)</span>
+            </div>
+
+            <div class="pricing">
+                <div class="current-price">{{ "{:,.2f}".format(book.price) }} บาท</div>
+                <div class="original-price">{{ "{:,.2f}".format(book.price * 1.1) }} บาท</div>
+                <div class="discount-badge">ประหยัด {{ "{:,.2f}".format(book.price * 0.1) }} บาท (10%)</div>
+            </div>
+            
+            <p class="points-info">จำนวนคะแนนที่ได้รับ 8 คะแนน</p>
+
+            <div class="action-area">
+                <div class="quantity-selector">
+                    <label>จำนวน :</label>
+                    <input type="number" id="orderQty" value="1" min="1">
+                </div>
+                <div class="buttons-wrapper">
+                    <button class="btn-wishlist"><i class="fas fa-heart"></i></button>
+                    {% if book.stock_quantity and book.stock_quantity > 0 %}
+                        <a href="#" id="btnAddToCart" class="btn-add-cart" onclick="addToCart()">Add to cart</a>
+                    {% else %}
+                        <a href="#" class="btn-add-cart" style="background: #ccc; cursor: not-allowed; pointer-events: none;">สินค้าหมด</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <script>
+                function addToCart() {
+                    var qty = document.getElementById('orderQty').value;
+                    var bookId = "{{ book.id }}";
+                    window.location.href = "/add_to_cart/" + bookId + "?qty=" + qty;
+                }
+            </script>
+            
+            <hr>
+            
+            <div class="book-description">
+                <h3>เรื่องย่อ</h3>
+                <p>{{ book.description if book.description else 'ไม่มีรายละเอียดเรื่องย่อสำหรับหนังสือเล่มนี้' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

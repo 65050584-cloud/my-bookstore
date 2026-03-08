@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="product-section">
+    <div class="section-header-centered" style="text-align: center; margin: 40px 0;">
+        <h2 style="color: #5d4037; font-size: 1.8rem; position: relative; display: inline-block;">
+            ผลการค้นหา: "{{ query }}"
+            <span style="display: block; width: 50px; height: 3px; background: #5d4037; margin: 10px auto;"></span>
+        </h2>
+        <p style="color: #8d6e63;">พบผลลัพธ์ {{ books|length }} รายการ</p>
+    </div>
+    
+    {% if books|length > 0 %}
+    <div class="book-grid">
+        {% for book in books %}
+        <div class="book-card">
+            <a href="/book/{{ book.id }}" style="text-decoration: none; color: inherit;">
+                <div class="book-cover">
+                    {% if book.image_url %}
+                        <img src="{{ book.image_url }}" alt="{{ book.title }}" style="width:100%; height:220px; object-fit:cover; border-radius: 8px;">
+                    {% else %}
+                        <div class="book-cover-placeholder" style="height:220px; border-radius: 8px;">
+                            <span>{{ book.title[:1] }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="book-info" style="padding-top: 10px;">
+                    <p class="book-title">{{ book.title }}</p>
+                    <p class="book-price">{{ "{:,.0f}".format(book.price) }} บาท</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; margin: 50px 0;">
+        <i class="fa-solid fa-magnifying-glass" style="font-size: 50px; color: #dcdcdc; margin-bottom: 20px;"></i>
+        <h3 style="color: #6d4c41;">ขออภัย ไม่พบสินค้าที่คุณค้นหา</h3>
+        <a href="/" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #8d5539; color: white; text-decoration: none; border-radius: 5px;">กลับหน้าแรก</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
