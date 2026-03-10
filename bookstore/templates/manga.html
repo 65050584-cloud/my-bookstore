@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="category-page-container">
+    
+    <aside class="sidebar-filter">
+    <form method="GET" action="/manga">
+        <input type="hidden" name="sort" value="{{ sort_by }}">
+        <h3 class="filter-title"><i class="fas fa-filter"></i> ตัวกรองสินค้า</h3>
+        
+        <div class="filter-group">
+            <h4>หมวดหมู่มังงะ</h4>
+            <label><input type="checkbox" name="category" value="โชเน็น" onchange="this.form.submit()" {% if 'โชเน็น' in selected_categories %}checked{% endif %}> โชเน็น (แอคชัน/ผจญภัย)</label>
+            <label><input type="checkbox" name="category" value="โชโจ" onchange="this.form.submit()" {% if 'โชโจ' in selected_categories %}checked{% endif %}> โชโจ (ตาหวาน/โรแมนติก)</label>
+            <label><input type="checkbox" name="category" value="เซเน็น" onchange="this.form.submit()" {% if 'เซเน็น' in selected_categories %}checked{% endif %}> เซเน็น (ผู้ใหญ่/ดราม่า)</label>
+            <label><input type="checkbox" name="category" value="แฟนตาซี" onchange="this.form.submit()" {% if 'แฟนตาซี' in selected_categories %}checked{% endif %}> แฟนตาซี</label>
+            <label><input type="checkbox" name="category" value="ต่างโลก" onchange="this.form.submit()" {% if 'ต่างโลก' in selected_categories %}checked{% endif %}> ต่างโลก</label>
+            <label><input type="checkbox" name="category" value="ตลก" onchange="this.form.submit()" {% if 'ตลก' in selected_categories %}checked{% endif %}> ตลก / คอมเมดี้</label>
+        </div>
+
+        <div class="filter-group">
+            <h4>ช่วงราคา</h4>
+            <label><input type="radio" name="price" value="0-100" onchange="this.form.submit()" {% if price_filter == '0-100' %}checked{% endif %}> ต่ำกว่า 100 บาท</label>
+            <label><input type="radio" name="price" value="100-300" onchange="this.form.submit()" {% if price_filter == '100-300' %}checked{% endif %}> 100 - 300 บาท</label>
+            <label><input type="radio" name="price" value="301-500" onchange="this.form.submit()" {% if price_filter == '301-500' %}checked{% endif %}> 301 - 500 บาท</label>
+            <label><input type="radio" name="price" value="500-up" onchange="this.form.submit()" {% if price_filter == '500-up' %}checked{% endif %}> 500 บาทขึ้นไป</label>
+        </div>
+        
+        <a href="/manga" class="btn-clear-filter" style="display: block; text-align: center; text-decoration: none; padding: 10px; background: #eee; color: #333; border-radius: 5px; margin-top: 15px; font-weight: bold;">ล้างตัวกรอง</a>
+    </form>
+    </aside>
+
+    <main class="main-content">
+        <div class="category-actions" style="margin-bottom: 20px; text-align: right;">
+            <select onchange="const url = new URL(window.location.href); url.searchParams.set('sort', this.value); window.location.href = url.toString();" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd; cursor: pointer; outline: none; background-color: #fff;">
+                <option value="latest" {% if sort_by == 'latest' %}selected{% endif %}>เรียงตาม: ล่าสุด</option>
+                <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>เรียงตาม: ราคา ต่ำ-สูง</option>
+                <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>เรียงตาม: ราคา สูง-ต่ำ</option>
+            </select>
+        </div>
+
+        <div class="book-grid">
+            {% for book in manga_list %}
+                    <div class="book-card" style="background: white; padding: 15px; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                                    <a href="/book/{{ book.id }}" style="text-decoration: none; color: inherit;">
+                                        <div class="book-image" style="position: relative; width: 100%; padding-top: 140%; overflow: hidden; border-radius: 8px;">
+                        {% if book.image_url %}
+                            <img src="{{ book.image_url }}" alt="{{ book.title }}" 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <div class="book-placeholder" style="position: absolute; top: 0; left: 0;">
+                                <i class="fa-solid fa-book-open"></i>
+                                <span>{{ book.title }}</span>
+                                <small style="font-size: 0.7rem; margin-top: 5px; opacity: 0.8;">(รออัปเดตปก)</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="book-info" style="padding-top: 15px;">
+                        <p class="book-title" style="margin: 5px 0; font-weight:bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ book.title }}</p>
+                        <p style="margin: 0 0 5px 0; font-size: 13px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ book.author if book.author else 'ไม่ระบุผู้เขียน' }}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <p class="book-price" style="color: #d32f2f; margin: 0; font-weight: bold;">{{ "{:,.0f}".format(book.price) }} บาท</p>
+                            <p style="margin: 0; font-size: 12px; color: {% if book.stock_quantity and book.stock_quantity > 0 %}#28a745{% else %}#d32f2f{% endif %}; font-weight: bold;">
+                                {% if book.stock_quantity and book.stock_quantity > 0 %}มีสินค้า{% else %}หมด{% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "admin_base.html" %}
+
+{% block admin_content %}
+<header class="admin-header">
+    <div class="admin-title-box">
+        <h2>เพิ่มหนังสือใหม่</h2>
+        <p>Add New Product to Database</p>
+    </div>
+</header>
+
+<div style="background-color: #f4efe6; padding: 40px; border-radius: 20px; max-width: 600px;">
+    
+    {% if msg %}
+    <div style="background-color: #dcedc8; color: #33691e; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: bold;">
+        <i class="fa-solid fa-circle-check"></i> {{ msg }}
+    </div>
+    {% endif %}
+
+    <form action="/admin/add_book" method="POST">
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; color: #5c3a21; margin-bottom: 8px;">ชื่อหนังสือ:</label>
+            <input type="text" name="title" required placeholder="กรอกชื่อหนังสือ..." style="width: 100%; padding: 12px; border: 1px solid #dcd3c6; border-radius: 10px; font-family: inherit; background: white;">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; color: #5c3a21; margin-bottom: 8px;">ราคา (บาท):</label>
+            <input type="number" name="price" required placeholder="0" style="width: 100%; padding: 12px; border: 1px solid #dcd3c6; border-radius: 10px; font-family: inherit; background: white;">
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <label style="display: block; font-weight: bold; color: #5c3a21; margin-bottom: 8px;">จำนวนสต็อก (เล่ม):</label>
+            <input type="number" name="stock_quantity" required placeholder="0" style="width: 100%; padding: 12px; border: 1px solid #dcd3c6; border-radius: 10px; font-family: inherit; background: white;">
+        </div>
+        
+        <button type="submit" style="background-color: #4a2c1b; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px;">
+            <i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูลหนังสือ
+        </button>
+    </form>
+</div>
+{% endblock %}

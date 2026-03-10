@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookstore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <div id="sidebarMenu" class="sidebar-menu">
+        <div class="sidebar-header">
+            <h3 style="margin: 0;">หมวดหมู่สินค้า</h3>
+            <button id="closeSidebar" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="has-submenu">
+                <a href="#" class="menu-toggle">หนังสือ <i class="fa-solid fa-chevron-down"></i></a>
+                <ul class="submenu">
+                    <li><a href="/all-books">หนังสือทั้งหมด</a></li>
+                    <li><a href="/category?name=นิยาย">นิยาย ({{ get_cat_count('นิยาย') }})</a></li>
+                    <li><a href="/category?name=วรรณกรรม">วรรณกรรม ({{ get_cat_count('วรรณกรรม') }})</a></li>
+                    <li><a href="/category?name=เรื่องสั้น">เรื่องสั้น ({{ get_cat_count('เรื่องสั้น') }})</a></li>
+                    <li><a href="/category?name=ธุรกิจ">การบริหารธุรกิจ ({{ get_cat_count('ธุรกิจ') }})</a></li>
+                    <li><a href="/category?name=การเงิน">การเงิน ({{ get_cat_count('การเงิน') }})</a></li>
+                    <li><a href="/category?name=พัฒนาตนเอง">พัฒนาตนเอง ({{ get_cat_count('พัฒนาตนเอง') }})</a></li>
+                    <li><a href="/category?name=สุขภาพ">สุขภาพ ({{ get_cat_count('สุขภาพ') }})</a></li>
+                    <li><a href="/category?name=จิตวิทยา">จิตวิทยา ({{ get_cat_count('จิตวิทยา') }})</a></li>
+                    <li><a href="/category?name=กฎหมาย">กฎหมาย ({{ get_cat_count('กฎหมาย') }})</a></li>
+                    <li><a href="/category?name=คอมพิวเตอร์">คอมพิวเตอร์ ({{ get_cat_count('คอมพิวเตอร์') }})</a></li>
+                </ul>
+            </li>
+            
+            <li class="has-submenu">
+                <a href="#" class="menu-toggle">อีบุ๊ก <i class="fa-solid fa-chevron-down"></i></a>
+                <ul class="submenu">
+                    <li><a href="/all-ebooks">อีบุ๊กทั้งหมด</a></li>
+                    <li><a href="/category?name=นิยาย&format=ebook">นิยาย ({{ get_cat_count('นิยาย', 'ebook') }})</a></li>
+                    <li><a href="/category?name=วรรณกรรม&format=ebook">วรรณกรรม ({{ get_cat_count('วรรณกรรม', 'ebook') }})</a></li>
+                    <li><a href="/category?name=เรื่องสั้น&format=ebook">เรื่องสั้น ({{ get_cat_count('เรื่องสั้น', 'ebook') }})</a></li>
+                    <li><a href="/category?name=ธุรกิจ&format=ebook">การบริหารธุรกิจ ({{ get_cat_count('ธุรกิจ', 'ebook') }})</a></li>
+                    <li><a href="/category?name=การเงิน&format=ebook">การเงิน ({{ get_cat_count('การเงิน', 'ebook') }})</a></li>
+                    <li><a href="/category?name=พัฒนาตนเอง&format=ebook">พัฒนาตนเอง ({{ get_cat_count('พัฒนาตนเอง', 'ebook') }})</a></li>
+                    <li><a href="/category?name=สุขภาพ&format=ebook">สุขภาพ ({{ get_cat_count('สุขภาพ', 'ebook') }})</a></li>
+                    <li><a href="/category?name=จิตวิทยา&format=ebook">จิตวิทยา ({{ get_cat_count('จิตวิทยา', 'ebook') }})</a></li>
+                    <li><a href="/category?name=กฎหมาย&format=ebook">กฎหมาย ({{ get_cat_count('กฎหมาย', 'ebook') }})</a></li>
+                    <li><a href="/category?name=คอมพิวเตอร์&format=ebook">คอมพิวเตอร์ ({{ get_cat_count('คอมพิวเตอร์', 'ebook') }})</a></li>
+                </ul>
+            </li>
+
+            <li><a href="/magazines">นิตยสาร</a></li>
+            <li><a href="/preorder">พรีออเดอร์</a></li>
+            <li><a href="/manga">มังงะ</a></li>
+            <li><a href="/audiobook">หนังสือเสียง</a></li>
+        </ul>
+    </div>
+    <header>
+        <div class="top-header">
+            <div class="header-container">
+                <div class="hamburger-menu">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+    
+                <div class="site-logo">
+                    <i class="fa-solid fa-book-open"></i> BOOK
+                </div>
+    
+                <form action="/search" method="GET" class="search-bar" style="position: relative;">
+                    <input type="text" name="q" id="searchInput" placeholder="ค้นหาชื่อหนังสือ..." autocomplete="off">
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    
+                    <div id="searchSuggestions" class="search-suggestions"></div>
+                </form>
+    
+                <div class="header-actions">
+                    <a href="/cart" class="cart-icon">
+                        <i class="fa-solid fa-basket-shopping"></i>
+                    </a>
+                   {% if 'user' in session %}
+                {% if session['user'] == 'admin@bookstore.com' %}
+                    <a href="/admin/dashboard" class="login-btn" style="background-color: #2e7d32;">หลังบ้าน (Admin)</a>
+                {% endif %}
+
+                <a href="/logout" class="login-btn" style="background-color: #d32f2f;">ออกจากระบบ ({{ session['user'].split('@')[0] }})</a>
+            {% else %}
+                <a href="/login" class="login-btn">เข้าสู่ระบบ / สมัครสมาชิก</a>
+            {% endif %}
+                </div>
+            </div>
+        </div>
+    
+        <nav class="bottom-nav">
+            <div class="header-container nav-align">
+                <a href="/" class="nav-icon"><i class="fa-solid fa-house"></i></a>
+                <a href="/" class="nav-item {% if request.path == '/' or '/all-books' in request.path or '/book/' in request.path %}active{% endif %}">หนังสือ</a>
+                <a href="/ebooks" class="nav-item {% if '/ebooks' in request.path or '/all-ebooks' in request.path %}active{% endif %}">อีบุ๊ก</a>
+                <a href="/magazines" class="nav-item {% if '/magazines' in request.path %}active{% endif %}">นิตยสาร</a>
+                <a href="/preorder" class="nav-item {% if '/preorder' in request.path %}active{% endif %}">พรีออเดอร์</a>
+                <a href="/manga" class="nav-item {% if '/manga' in request.path %}active{% endif %}">มังงะ</a>
+                <a href="/audiobook" class="nav-item {% if '/audiobook' in request.path %}active{% endif %}">หนังสือเสียง</a>
+            </div>
+        </nav>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    {% block script %}{% endblock %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // --- 1. ระบบตัวช่วยค้นหา (Search Suggestions) ---
+            const searchInput = document.getElementById("searchInput");
+            const suggestionsBox = document.getElementById("searchSuggestions");
+
+            if(searchInput && suggestionsBox) {
+                searchInput.addEventListener("input", function() {
+                    const query = this.value.trim();
+                    if (query.length > 0) {
+                        fetch(`/search_suggestions?q=${encodeURIComponent(query)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                suggestionsBox.innerHTML = ""; 
+                                if (data.length > 0) {
+                                    data.forEach(book => {
+                                        const a = document.createElement("a");
+                                        a.href = `/book/${book.id}`;
+                                        a.className = "suggestion-item";
+                                        a.innerHTML = `<i class="fa-solid fa-book" style="margin-right:8px; color:#a68b80;"></i> ${book.title}`;
+                                        suggestionsBox.appendChild(a);
+                                    });
+                                    suggestionsBox.style.display = "block";
+                                } else {
+                                    suggestionsBox.innerHTML = `<div class="suggestion-none">ไม่พบหนังสือที่ค้นหา</div>`;
+                                    suggestionsBox.style.display = "block";
+                                }
+                            });
+                    } else {
+                        suggestionsBox.style.display = "none";
+                    }
+                });
+
+                document.addEventListener("click", function(e) {
+                    if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                        suggestionsBox.style.display = "none";
+                    }
+                });
+            }
+
+            // --- 2. ระบบ Sidebar Menu (Hamburger) ---
+            const hamburgerBtn = document.querySelector(".hamburger-menu");
+            const sidebarMenu = document.getElementById("sidebarMenu");
+            const sidebarOverlay = document.getElementById("sidebarOverlay");
+            const closeSidebarBtn = document.getElementById("closeSidebar");
+
+            if(hamburgerBtn && sidebarMenu && sidebarOverlay && closeSidebarBtn) {
+                // เปิด Sidebar
+                hamburgerBtn.addEventListener("click", function() {
+                    sidebarMenu.classList.add("active");
+                    sidebarOverlay.classList.add("active");
+                });
+
+                // ปิด Sidebar
+                function closeSidebar() {
+                    sidebarMenu.classList.remove("active");
+                    sidebarOverlay.classList.remove("active");
+                }
+
+                closeSidebarBtn.addEventListener("click", closeSidebar);
+                sidebarOverlay.addEventListener("click", closeSidebar);
+
+                // เปิด-ปิด Submenu
+                const menuToggles = document.querySelectorAll(".menu-toggle");
+                menuToggles.forEach(toggle => {
+                    toggle.addEventListener("click", function(e) {
+                        e.preventDefault(); 
+                        const parentLi = this.parentElement;
+                        parentLi.classList.toggle("active");
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
