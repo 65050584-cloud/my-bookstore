@@ -1,0 +1,42 @@
+{% extends "admin_base.html" %}
+{% block admin_content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 style="color: #5c3a21; margin: 0;"><i class="fa-solid fa-list-check"></i> รายการคำสั่งซื้อทั้งหมด</h2>
+    <a href="/admin/dashboard" style="background: #888; color: white; padding: 8px 15px; border-radius: 10px; text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> กลับไป Dashboard</a>
+</div>
+
+<div class="admin-tabs" style="margin-bottom: 20px;">
+    <a href="/admin/orders?status=all" class="admin-tab {% if current_status == 'all' %}active{% endif %}">All Sales</a>
+    <a href="/admin/orders?status=pending" class="admin-tab {% if current_status == 'pending' %}active{% endif %}">Pending</a>
+    <a href="/admin/orders?status=completed" class="admin-tab {% if current_status == 'completed' %}active{% endif %}">Completed</a>
+</div>
+
+<div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+    {% for order in orders %}
+    <div class="admin-sale-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; background: #fdfdfd; margin-bottom: 10px; border-radius: 10px; border: 1px solid #eaeaea;">
+        <div>
+            <strong style="color: #5c3a21; font-size: 16px;">Order #{{ order.id }}</strong>
+            <p style="margin: 5px 0; font-size: 13px; color: #888;">{{ order.user_email }}</p>
+            <p style="margin: 0; font-size: 14px; font-weight: bold; color: #b8860b;">ยอด: ฿{{ "{:,.2f}".format(order.total_price) }}</p>
+            {% if order.slip_image_url %}
+            <a href="{{ order.slip_image_url }}" target="_blank" style="display: inline-block; margin-top: 10px; font-size: 12px; color: #0066cc; text-decoration: underline;">
+                <i class="fa-solid fa-image"></i> ดูรูปสลิป
+            </a>
+            {% endif %}
+        </div>
+        <div style="text-align: right;">
+            {% if order.status == 'Pending' %}
+                <span style="background: #fff3cd; color: #856404; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 10px;">{{ order.status }}</span><br>
+                <a href="/admin/approve_order/{{ order.id }}" onclick="return confirm('ตรวจสอบสลิปแล้ว ยืนยันคำสั่งซื้อนี้ใช่ไหม?');" style="background: #28a745; color: white; padding: 8px 12px; border-radius: 5px; text-decoration: none; font-size: 12px; font-weight: bold; display: inline-block;">
+                    <i class="fa-solid fa-check"></i> ยืนยันออเดอร์
+                </a>
+            {% else %}
+                <span style="background: #d4edda; color: #155724; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">{{ order.status }}</span>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <p style="text-align: center; color: #888; padding: 40px;">ไม่มีข้อมูลคำสั่งซื้อ</p>
+    {% endfor %}
+</div>
+{% endblock %}

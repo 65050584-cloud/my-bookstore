@@ -1,0 +1,30 @@
+{% extends "admin_base.html" %}
+{% block admin_content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 style="color: #5c3a21; margin: 0;"><i class="fa-solid fa-book"></i> รายการหนังสือทั้งหมด ({{ total_books }} เล่ม)</h2>
+    <a href="/admin/dashboard" style="background: #888; color: white; padding: 8px 15px; border-radius: 10px; text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> กลับไป Dashboard</a>
+</div>
+
+<div class="admin-books-grid">
+    {% for book in books %}
+    <div class="admin-book-card">
+        <img src="{{ book.image_url if book.image_url else 'https://via.placeholder.com/200x250/e0e0e0/aaa?text=No+Cover' }}" alt="Book Cover">
+        <div class="price">฿{{ "{:,.0f}".format(book.price) }}</div>
+        <div class="title" style="margin-bottom: 5px;">{{ book.title }}</div>
+        <div style="font-size: 14px; color: {% if book.stock_quantity and book.stock_quantity > 0 %}#2e7d32{% else %}#d32f2f{% endif %}; font-weight: bold; margin-bottom: 15px; background: #fdf5e6; padding: 5px; border-radius: 5px;">
+            <i class="fa-solid fa-box"></i> จำนวน: {{ book.stock_quantity if book.stock_quantity else 0 }} เล่ม
+        </div>
+        <div style="display: flex; gap: 5px; justify-content: space-between;">
+            <a href="/admin/edit_book/{{ book.id }}" style="flex: 1; background: #e6b800; color: white; padding: 5px; border-radius: 5px; text-decoration: none; font-size: 12px; font-weight: bold; text-align: center;">
+                <i class="fa-solid fa-pen"></i> แก้ไข
+            </a>
+            <a href="/admin/delete_book/{{ book.id }}" onclick="return confirm('แน่ใจหรือไม่ว่าต้องการลบหนังสือเล่มนี้?');" style="flex: 1; background: #d32f2f; color: white; padding: 5px; border-radius: 5px; text-decoration: none; font-size: 12px; font-weight: bold; text-align: center;">
+                <i class="fa-solid fa-trash"></i> ลบ
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <p style="grid-column: span 4; text-align: center; color: #888;">ยังไม่มีหนังสือในระบบ</p>
+    {% endfor %}
+</div>
+{% endblock %}

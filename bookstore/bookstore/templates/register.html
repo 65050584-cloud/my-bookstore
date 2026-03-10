@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; color: #5d4037; margin-bottom: 20px;">สมัครสมาชิก</h2>
+    
+    {% if error %}
+    <div style="background-color: #ffebee; color: #c62828; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 14px; text-align: center;">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form action="/register" method="POST">
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; color: #6d4c41; margin-bottom: 5px; font-weight: bold;">อีเมล</label>
+            <input type="email" name="email" required placeholder="example@email.com" style="width: 100%; padding: 10px; border: 1px solid #dcdcdc; border-radius: 8px; box-sizing: border-box; font-family: inherit;">
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display: block; color: #6d4c41; margin-bottom: 5px; font-weight: bold;">รหัสผ่าน</label>
+            <input type="password" name="password" required placeholder="รหัสผ่านอย่างน้อย 6 ตัวอักษร" style="width: 100%; padding: 10px; border: 1px solid #dcdcdc; border-radius: 8px; box-sizing: border-box; font-family: inherit;">
+        </div>
+        
+        <button type="submit" style="width: 100%; padding: 12px; background-color: #8d5539; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; transition: background 0.3s;">
+            สมัครสมาชิก
+        </button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 20px; font-size: 14px;">
+        <span style="color: #6d4c41;">มีบัญชีอยู่แล้วใช่ไหม? </span>
+        <a href="/login" style="color: #d32f2f; text-decoration: none; font-weight: bold;">เข้าสู่ระบบ</a>
+    </div>
+</div>
+{% endblock %}
