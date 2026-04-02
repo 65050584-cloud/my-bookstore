@@ -1,0 +1,138 @@
+{% extends "admin_base.html" %}
+
+{% block admin_content %}
+
+<div class="user-list-wrapper">
+    
+    <div class="top-action-bar">
+        <div class="top-title">
+            <i class="fa-solid fa-chevron-down"></i> User Roles
+        </div>
+        <div class="top-buttons">
+            <a href="/admin/notifications" style="color: #7a7369; margin-right: 15px; text-decoration: none; position: relative; font-size: 18px;">
+                <i class="fa-solid fa-bell"></i>
+                <span style="position: absolute; top: -2px; right: -4px; background: #e74c3c; width: 8px; height: 8px; border-radius: 50%;"></span>
+            </a>  
+            <i class="fa-solid fa-filter" style="color: #7a7369; margin-right: 15px;"></i>
+            <i class="fa-solid fa-eye" style="color: #7a7369; margin-right: 15px;"></i>
+            <button>Sort</button>
+            <button>View</button>
+            <button onclick="document.getElementById('addUserModal').style.display='flex'"><i class="fa-solid fa-plus"></i> Add User</button>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <div class="table-container">
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox"> User Name <i class="fa-solid fa-user"></i></th>
+                        <th>Email <i class="fa-solid fa-envelope"></i></th>
+                        <th>Role</th>
+                        <th>Status <i class="fa-solid fa-circle-check"></i></th>
+                        <th style="text-align: center;">Active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td>
+                            <input type="checkbox"> 
+                            <i class="fa-solid fa-user" style="margin: 0 5px;"></i> 
+                            {{ u.email.split('@')[0] }}
+                        </td>
+                        <td>{{ u.email }}</td>
+                        <td><strong>{{ u.role }}</strong></td>
+                        <td>Active</td>
+                        <td style="text-align: center;">
+                            <button onclick="openEditModal('{{ u.id }}', '{{ u.role }}')" style="background:none; border:none; cursor:pointer; color: #4a2f1d; font-size: 1.1rem; margin-right: 10px;">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <form action="/admin/delete_user/{{ u.id }}" method="POST" onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้ {{ u.email.split('@')[0] }} ออกจากระบบ?');" style="display:inline;">
+                                <button type="submit" style="background:none; border:none; cursor:pointer; color: #a44; font-size: 1.1rem;">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    
+                </tbody>
+            </table>
+        </div>
+
+        <div class="filter-sidebar">
+            <div class="filter-header">
+                <span><i class="fa-solid fa-filter"></i> Filter</span>
+                <i class="fa-solid fa-xmark" style="cursor: pointer; color: #7a7369;"></i>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-title">User Type</div>
+                <label class="filter-item"><input type="checkbox" checked> <i class="fa-solid fa-user"></i> Member</label>
+                <label class="filter-item"><input type="checkbox" checked> <i class="fa-solid fa-user-plus"></i> New User</label>
+                <label class="filter-item"><input type="checkbox" checked> <i class="fa-solid fa-user-clock"></i> Pending</label>
+                <label class="filter-item"><input type="checkbox" checked> <i class="fa-solid fa-user"></i> User</label>
+                <label class="filter-item"><input type="checkbox" checked> <i class="fa-solid fa-trash"></i> Edit User</label>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-title">Manage Users</div>
+                <label class="filter-item"><input type="checkbox" checked> <i class="fa-solid fa-user-tie"></i> Charlie Brown</label>
+                <label class="filter-item"><input type="checkbox" checked> <i class="fa-solid fa-users"></i> Add User</label>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="addUserModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 25px; border-radius: 15px; width: 350px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <h3 style="margin-top: 0; color: #4a2f1d;"><i class="fa-solid fa-user-plus"></i> เพิ่มผู้ใช้งานใหม่</h3>
+            
+            <form action="/admin/add_user" method="POST">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">อีเมล:</label>
+                    <input type="email" name="email" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">รหัสผ่าน:</label>
+                    <input type="password" name="password" required minlength="6" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
+                </div>
+                <div style="text-align: right;">
+                    <button type="button" onclick="document.getElementById('addUserModal').style.display='none'" style="background: #e5e2d8; color: #333; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; margin-right: 10px;">ยกเลิก</button>
+                    <button type="submit" style="background: #4a2f1d; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">เพิ่มผู้ใช้</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<div id="editUserModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 25px; border-radius: 15px; width: 350px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <h3 style="margin-top: 0; color: #4a2f1d;"><i class="fa-solid fa-user-pen"></i> แก้ไขสิทธิ์ผู้ใช้งาน</h3>
+            
+            <form action="/admin/edit_user" method="POST">
+                <input type="hidden" name="user_id" id="editUserId">
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">สิทธิ์การใช้งาน (Role):</label>
+                    <select name="role" id="editUserRole" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem;">
+                        <option value="user">User (ผู้ใช้ทั่วไป)</option>
+                        <option value="admin">Admin (ผู้ดูแลระบบ)</option>
+                    </select>
+                </div>
+                <div style="text-align: right;">
+                    <button type="button" onclick="document.getElementById('editUserModal').style.display='none'" style="background: #e5e2d8; color: #333; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; margin-right: 10px;">ยกเลิก</button>
+                    <button type="submit" style="background: #4a2f1d; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">บันทึกการเปลี่ยนแปลง</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openEditModal(userId, currentRole) {
+            document.getElementById('editUserId').value = userId; // ยัด ID ใส่ช่องลับ
+            document.getElementById('editUserRole').value = currentRole || 'user'; // เลือก dropdown
+            document.getElementById('editUserModal').style.display = 'flex'; // โชว์ Popup
+        }
+    </script>
+{% endblock %}

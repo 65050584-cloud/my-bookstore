@@ -1,0 +1,183 @@
+{% extends "admin_base.html" %}
+
+{% block admin_content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<header class="admin-header">
+    <div class="admin-title-box">
+        <h2>OVERVIEW</h2>
+        <p>Admin Dashboard</p>
+    </div>
+    <div class="admin-search">
+        <i class="fa-solid fa-magnifying-glass" style="color: #a68a7a;"></i>
+        <input type="text" placeholder="Search...">
+    </div>
+    <div class="admin-logo">
+        <i class="fa-solid fa-book-open"></i> BOOK
+    </div>
+    <a href="/admin/notifications" style="color: #3b2313; text-decoration: none; font-size: 20px; position: relative; margin-right: 20px;">
+        <i class="fa-solid fa-bell"></i>
+        {% if pending_count > 0 %}
+        <span style="position: absolute; top: -5px; right: -5px; background: #e74c3c; width: 10px; height: 10px; border-radius: 50%;"></span>
+        {% endif %}
+    </a>
+</header>
+
+<div class="admin-stat-grid">
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background: #e8f5e9; color: #2e7d32;">
+            <i class="fa-solid fa-sack-dollar"></i>
+        </div>
+        <div>
+            <p style="margin: 0; color: #888; font-size: 13px; font-weight: bold;">ยอดขายรวม</p>
+            <h3 style="margin: 5px 0 0 0; color: #2c3e50; font-size: 24px;">฿{{ "{:,.0f}".format(total_sales) }}</h3>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background: #fff8e1; color: #f57f17;">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+        </div>
+        <div>
+            <p style="margin: 0; color: #888; font-size: 13px; font-weight: bold;">รอตรวจสอบ</p>
+            <h3 style="margin: 5px 0 0 0; color: #2c3e50; font-size: 24px;">{{ pending_count }} <span style="font-size: 14px; color: #aaa;">รายการ</span></h3>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background: #e3f2fd; color: #1565c0;">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div>
+            <p style="margin: 0; color: #888; font-size: 13px; font-weight: bold;">สมาชิกรวม</p>
+            <h3 style="margin: 5px 0 0 0; color: #2c3e50; font-size: 24px;">{{ user_count }} <span style="font-size: 14px; color: #aaa;">คน</span></h3>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background: #f3e5f5; color: #7b1fa2;">
+            <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <div>
+            <p style="margin: 0; color: #888; font-size: 13px; font-weight: bold;">ในคลังทั้งหมด</p>
+            <h3 style="margin: 5px 0 0 0; color: #2c3e50; font-size: 24px;">{{ total_books }} <span style="font-size: 14px; color: #aaa;">เล่ม</span></h3>
+        </div>
+    </div>
+</div>
+
+<div class="admin-layout-split">
+    <div class="admin-content-card admin-card-main">
+        <div class="admin-section-header">
+            <h3 class="admin-section-title"><i class="fa-solid fa-chart-area" style="color: #4a2c1b; margin-right: 8px;"></i> แนวโน้มยอดขาย</h3>
+        </div>
+        <div style="position: relative; height: 280px; width: 100%;">
+            <canvas id="salesChart"></canvas>
+        </div>
+    </div>
+
+    <div class="admin-content-card admin-card-side">
+        <div class="admin-section-header">
+            <h3 class="admin-section-title"><i class="fa-solid fa-receipt" style="color: #4a2c1b; margin-right: 8px;"></i> ออเดอร์เข้าใหม่</h3>
+            <a href="/admin/orders" class="admin-btn-link">ดูทั้งหมด</a>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; overflow-y: auto; max-height: 280px; padding-right: 5px;">
+            {% for order in orders %}
+            <div class="admin-order-item">
+                <div>
+                    <div style="font-weight: bold; color: #333; font-size: 15px;">#{{ order.id }} <span style="font-size: 12px; color: #888; margin-left: 5px;">{{ order.user_email.split('@')[0] }}</span></div>
+                    <div style="color: #4a2c1b; font-weight: bold; font-size: 14px; margin-top: 4px;">฿{{ "{:,.0f}".format(order.total_price) }}</div>
+                </div>
+                <div style="text-align: right;">
+                    {% if order.status == 'Pending' %}
+                        <span style="background: #fff3cd; color: #856404; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: bold;">รอตรวจสอบ</span>
+                        <div style="margin-top: 6px;">
+                            <a href="/admin/approve_order/{{ order.id }}" onclick="return confirm('ยืนยันออเดอร์นี้ใช่ไหม?');" style="color: white; background: #28a745; text-decoration: none; font-size: 10px; padding: 4px 8px; border-radius: 5px;"><i class="fa-solid fa-check"></i> ยืนยัน</a>
+                        </div>
+                    {% else %}
+                        <span style="background: #e8f5e9; color: #2e7d32; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: bold;"><i class="fa-solid fa-check-circle"></i> สำเร็จ</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div style="text-align: center; color: #aaa; padding: 40px 0;">
+                <i class="fa-solid fa-box-open" style="font-size: 35px; margin-bottom: 10px; color: #ddd;"></i>
+                <p style="margin: 0; font-size: 14px;">ยังไม่มีคำสั่งซื้อในขณะนี้</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="admin-content-card">
+    <div class="admin-section-header">
+        <h3 class="admin-section-title"><i class="fa-solid fa-book-medical" style="color: #4a2c1b; margin-right: 8px;"></i> เพิ่มเข้าคลังล่าสุด</h3>
+        <a href="/admin/books" class="admin-btn-link">จัดการหนังสือ</a>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+        {% for book in books %}
+        <div class="admin-dash-book-card">
+            <div class="book-cover" style="width:100%; height:200px; position: relative; margin-bottom: 15px;">
+                {% if book.image_url %}
+                    <img src="{{ book.image_url }}" alt="{{ book.title }}" style="width:100%; height:100%; object-fit:cover; border-radius: 8px;">
+                {% else %}
+                    <div class="book-placeholder" style="border-radius: 8px; height: 100%; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #aaa;">
+                        <i class="fa-solid fa-image" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <span style="font-size: 0.75rem;">ไม่มีรูปภาพ</span>
+                    </div>
+                {% endif %}
+            </div>
+            <div style="color: #b8860b; font-weight: bold; font-size: 18px; margin-bottom: 5px;">฿{{ "{:,.0f}".format(book.price) }}</div>
+            <div style="margin-bottom: 10px; color: #333; font-weight: bold; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ book.title }}</div>
+            
+            <div style="font-size: 12px; color: {% if book.stock_quantity and book.stock_quantity > 0 %}#2e7d32{% else %}#d32f2f{% endif %}; font-weight: bold; margin-bottom: 15px; background: {% if book.stock_quantity and book.stock_quantity > 0 %}#e8f5e9{% else %}#ffebee{% endif %}; padding: 6px; border-radius: 5px; text-align: center;">
+                <i class="fa-solid fa-box"></i> คงเหลือ: {{ book.stock_quantity if book.stock_quantity else 0 }} เล่ม
+            </div>
+        </div>
+        {% else %}
+        <p style="grid-column: 1 / -1; text-align: center; color: #888; padding: 20px;">ยังไม่มีหนังสือในระบบ</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const canvas = document.getElementById('salesChart');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            const rawLabels = {{ chart_labels | tojson | safe if chart_labels else '[]' }};
+            const rawValues = {{ chart_values | tojson | safe if chart_values else '[]' }};
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: rawLabels,
+                    datasets: [{
+                        label: 'ยอดขาย (บาท)',
+                        data: rawValues,
+                        borderColor: '#4a2c1b',
+                        backgroundColor: 'rgba(74, 44, 27, 0.1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#b8860b',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f0f0f0' }, border: { display: false } },
+                        x: { grid: { display: false }, border: { display: false } }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

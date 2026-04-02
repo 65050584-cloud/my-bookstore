@@ -1,0 +1,71 @@
+{% extends "admin_base.html" %}
+
+{% block admin_content %}
+<header class="admin-header" style="margin-bottom: 30px;">
+    <div class="admin-title-box">
+        <h2><i class="fa-solid fa-bell"></i> ศูนย์รวมการแจ้งเตือน</h2>
+        <p>Notifications Dashboard</p>
+    </div>
+</header>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+
+    <div class="widget" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 5px solid #3498db;">
+        <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+            <i class="fa-solid fa-box-open" style="color: #3498db;"></i> คำสั่งซื้อ & การเงิน
+        </h3>
+        <div style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+            {% set has_order = false %}
+            {% for noti in notifications if noti.type == 'order' %}
+                {% set has_order = true %}
+                <div style="padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #f8f9fa; border-left: 4px solid #3498db;">
+                    <p style="margin: 0 0 5px 0; font-size: 14px; color: #333;">{{ noti.message }}</p>
+                    <span style="font-size: 12px; color: #888;"><i class="fa-regular fa-clock"></i> {{ noti.created_at[:10] if noti.created_at != 'แจ้งเตือนระบบ' else 'Real-time' }}</span>
+                </div>
+            {% endfor %}
+            {% if not has_order %}
+                <p style="text-align: center; color: #aaa; font-size: 14px; margin-top: 20px;">ไม่มีออเดอร์ใหม่</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="widget" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 5px solid #e74c3c;">
+        <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+            <i class="fa-solid fa-triangle-exclamation" style="color: #e74c3c;"></i> สต๊อกใกล้หมด
+        </h3>
+        <div style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+            {% set has_stock = false %}
+            {% for noti in notifications if noti.type == 'stock' %}
+                {% set has_stock = true %}
+                <div style="padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #fdf2f2; border-left: 4px solid #e74c3c;">
+                    <p style="margin: 0 0 5px 0; font-size: 14px; color: #c0392b; font-weight: bold;">{{ noti.message }}</p>
+                    <span style="font-size: 12px; color: #e74c3c;"><i class="fa-solid fa-rotate"></i> เช็คข้อมูลล่าสุดเมื่อกี้</span>
+                </div>
+            {% endfor %}
+            {% if not has_stock %}
+                <p style="text-align: center; color: #aaa; font-size: 14px; margin-top: 20px;">สต๊อกสินค้าปกติ</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="widget" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 5px solid #2ecc71;">
+        <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+            <i class="fa-solid fa-users" style="color: #2ecc71;"></i> สมาชิกใหม่
+        </h3>
+        <div style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+            {% set has_user = false %}
+            {% for noti in notifications if noti.type == 'user' %}
+                {% set has_user = true %}
+                <div style="padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #f4fbf7; border-left: 4px solid #2ecc71;">
+                    <p style="margin: 0 0 5px 0; font-size: 14px; color: #333;">{{ noti.message }}</p>
+                    <span style="font-size: 12px; color: #888;"><i class="fa-regular fa-calendar"></i> {{ noti.created_at[:10] }}</span>
+                </div>
+            {% endfor %}
+            {% if not has_user %}
+                <p style="text-align: center; color: #aaa; font-size: 14px; margin-top: 20px;">ไม่มีสมาชิกใหม่</p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
