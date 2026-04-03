@@ -1,11 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="background: linear-gradient(135deg, #5c3a21, #8d5539); border-radius: 16px; padding: 40px 30px; text-align: center; color: white; margin-bottom: 30px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(92, 58, 33, 0.2);">
-    <h1 style="margin: 0; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">🔥 PRE-ORDER ZONE</h1>
-    <p style="margin: 15px 0 0 0; font-size: 1.1rem; opacity: 0.9;">สั่งจองหนังสือใหม่ล่วงหน้าก่อนใคร พร้อมรับของแถมและส่วนลดสุดพิเศษ!</p>
-    <i class="fa-solid fa-clock" style="position: absolute; right: -20px; top: -20px; font-size: 180px; opacity: 0.1; transform: rotate(-15deg);"></i>
-</div>
 <div class="category-page-container">
     
     <aside class="sidebar-filter">
@@ -45,18 +40,6 @@
 
         <div class="book-grid">
             {% for book in preorder_list %}
-            {% else %}
-                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: white; border-radius: 16px; border: 2px dashed #eee;">
-                    <div style="width: 100px; height: 100px; background: #fdf5e6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
-                        <i class="fa-solid fa-box-open" style="font-size: 45px; color: #8d5539;"></i>
-                    </div>
-                    <h3 style="color: #4a2f1d; margin-bottom: 10px;">ยังไม่มีรอบพรีออเดอร์ในขณะนี้</h3>
-                    <p style="color: #888; font-size: 15px; margin-bottom: 25px;">อดใจรออีกนิด! สินค้าใหม่กำลังเตรียมเปิดรับจองเร็วๆ นี้</p>
-                    <a href="/all-books" style="background: #5c3a21; color: white; text-decoration: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; transition: 0.3s; display: inline-block;" onmouseover="this.style.background='#3b2313'" onmouseout="this.style.background='#5c3a21'">
-                        <i class="fa-solid fa-book"></i> ดูหนังสือพร้อมส่งทั้งหมด
-                    </a>
-                </div>
-            {% endfor %}
             <div class="book-card" style="background: white; padding: 15px; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
                 <a href="/book/{{ book.id }}" style="text-decoration: none; color: inherit;">
                     <div class="book-image" style="position: relative; width: 100%; padding-top: 140%; overflow: hidden; border-radius: 8px;">
