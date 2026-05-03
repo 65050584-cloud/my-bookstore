@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>กรอกที่อยู่จัดส่ง</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .address-card {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+        .address-card:hover { border-color: #5c3a21; }
+        .address-card input[type="radio"] { margin-top: 4px; margin-right: 15px; transform: scale(1.2); accent-color: #5c3a21; }
+        .badge { background-color: #5c3a21; color: white; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem; margin-bottom: 5px; display: inline-block; }
+    </style>
+</head>
+<body style="background-color: #fdf5e6; font-family: sans-serif; padding: 50px;">
+
+    <div style="background: white; max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+        <h2 style="text-align: center; color: #5c3a21; margin-bottom: 20px;">
+            <i class="fa-solid fa-truck"></i> ข้อมูลที่อยู่จัดส่ง
+        </h2>
+
+        <form action="/shipping" method="POST">
+            
+            {% if address %}
+            <label class="address-card" id="card-saved" style="border-color: #5c3a21; background-color: #fdfaf2;">
+                <input type="radio" name="address_option" value="saved" checked onchange="toggleAddress()">
+                <div>
+                    <span class="badge">ที่อยู่ล่าสุดที่เคยใช้</span>
+                    <p style="margin: 5px 0 0 0; color: #333; line-height: 1.5;">
+                        <strong>{{ address.full_name }}</strong> ({{ address.phone }})<br>
+                        {{ address.address_detail }} ต.{{ address.sub_district }} อ.{{ address.district }} จ.{{ address.province }} {{ address.postal_code }}
+                    </p>
+                </div>
+            </label>
+            {% endif %}
+
+            <label class="address-card" id="card-new" style="{% if not address %}border-color: #5c3a21; background-color: #fdfaf2;{% endif %}">
+                <input type="radio" name="address_option" value="new" {% if not address %}checked{% endif %} onchange="toggleAddress()">
+                <div style="font-weight: bold; color: #5c3a21; margin-top: 2px;">
+                    <i class="fa-solid fa-plus"></i> เพิ่มที่อยู่ใหม่
+                </div>
+            </label>
+
+            <div id="new-address-form" style="display: {% if address %}none{% else %}block{% endif %}; border-top: 1px dashed #ccc; padding-top: 20px; margin-top: 10px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left;">
+                    <div style="grid-column: span 2;">
+                        <label style="font-weight: bold; color: #5c3a21;">ชื่อ-นามสกุล ผู้รับ</label>
+                        <input type="text" name="full_name" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px; box-sizing: border-box;">
+                    </div>
+                    <div>
+                        <label style="font-weight: bold; color: #5c3a21;">เบอร์โทรศัพท์</label>
+                        <input type="text" name="phone" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px; box-sizing: border-box;">
+                    </div>
+                    <div>
+                        <label style="font-weight: bold; color: #5c3a21;">รหัสไปรษณีย์</label>
+                        <input type="text" name="postal_code" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px; box-sizing: border-box;">
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label style="font-weight: bold; color: #5c3a21;">บ้านเลขที่, ถนน, ซอย/หมู่บ้าน</label>
+                        <input type="text" name="address_detail" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px; box-sizing: border-box;">
+                    </div>
+                    <div>
+                        <label style="font-weight: bold; color: #5c3a21;">ตำบล / แขวง</label>
+                        <input type="text" name="sub_district" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px; box-sizing: border-box;">
+                    </div>
+                    <div>
+                        <label style="font-weight: bold; color: #5c3a21;">อำเภอ / เขต</label>
+                        <input type="text" name="district" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px; box-sizing: border-box;">
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label style="font-weight: bold; color: #5c3a21;">จังหวัด</label>
+                        <input type="text" name="province" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px; box-sizing: border-box;">
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; display: flex; gap: 15px;">
+                <a href="/cart" style="flex: 1; text-align: center; padding: 15px; background: #eee; border-radius: 10px; text-decoration: none; color: #333; font-weight: bold;">กลับตะกร้า</a>
+                <button type="submit" style="flex: 2; padding: 15px; background: #4a2c1b; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold;">
+                    ไปหน้าชำระเงิน <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function toggleAddress() {
+            const option = document.querySelector('input[name="address_option"]:checked').value;
+            const newAddressForm = document.getElementById('new-address-form');
+            const cardSaved = document.getElementById('card-saved');
+            const cardNew = document.getElementById('card-new');
+
+            // ทำให้ช่อง input ในฟอร์มใหม่ required (บังคับกรอก) เฉพาะตอนเลือก "เพิ่มที่อยู่ใหม่"
+            const inputs = newAddressForm.querySelectorAll('input');
+
+            if (option === 'new') {
+                newAddressForm.style.display = 'block';
+                if(cardSaved) {
+                    cardSaved.style.borderColor = '#ccc';
+                    cardSaved.style.backgroundColor = 'transparent';
+                }
+                cardNew.style.borderColor = '#5c3a21';
+                cardNew.style.backgroundColor = '#fdfaf2';
+                inputs.forEach(i => i.setAttribute('required', 'required'));
+            } else {
+                newAddressForm.style.display = 'none';
+                if(cardSaved) {
+                    cardSaved.style.borderColor = '#5c3a21';
+                    cardSaved.style.backgroundColor = '#fdfaf2';
+                }
+                cardNew.style.borderColor = '#ccc';
+                cardNew.style.backgroundColor = 'transparent';
+                inputs.forEach(i => i.removeAttribute('required'));
+            }
+        }
+        
+        // รันฟังก์ชันหนึ่งรอบตอนเปิดหน้าเว็บเพื่อตั้งค่าเริ่มต้น
+        window.onload = toggleAddress;
+    </script>
+</body>
+</html>

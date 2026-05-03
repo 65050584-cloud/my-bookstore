@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="admin-mode">
+
+    <aside class="admin-sidebar">
+        <div class="admin-user">
+            <img src="https://ui-avatars.com/api/?name={{ session.get('user', 'A')[0] }}&background=fff&color=a68a7a" alt="User">
+            <div class="admin-user-info">
+                <strong>Admin</strong>
+                <span>{{ session.get('user', 'admin@email.com') }}</span>
+            </div>
+        </div>
+
+        <ul class="admin-nav">
+            <li><a href="/"><i class="fa-solid fa-house"></i> กลับหน้าร้านปกติ</a></li>
+            
+            <li class="{% if request.path == '/admin/dashboard' %}active{% endif %}">
+                <a href="/admin/dashboard"><i class="fa-solid fa-cart-shopping"></i> สินค้าและการขาย</a>
+            </li>
+            
+            <li class="{% if request.path == '/admin/add_book' %}active{% endif %}">
+                <a href="/admin/add_book"><i class="fa-solid fa-plus"></i> เพิ่มหนังสือใหม่</a>
+            </li>
+
+            <li class="{% if request.path == '/admin/users' %}active{% endif %}">
+                <a href="/admin/users"><i class="fa-solid fa-users"></i> จัดการผู้ใช้งาน</a>
+            </li>
+            <li class="{% if request.path == '/admin/user_list' %}active{% endif %}">
+                <a href="/admin/user_list"><i class="fa-solid fa-users"></i> รายการผู้ใช้</a>
+            </li>
+            
+        </ul>
+
+        <div class="admin-sidebar-bottom">
+            <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> ออกจากระบบ</a>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        {% block admin_content %}{% endblock %}
+    </main>
+
+</body>
+</html>

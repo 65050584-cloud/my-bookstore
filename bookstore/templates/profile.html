@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 900px; margin: 50px auto; padding: 20px;">
+    <h2 style="color: #4a2f1d; border-bottom: 2px solid #e5e2d8; padding-bottom: 10px; margin-bottom: 30px;">
+        <i class="fa-solid fa-user-gear"></i> บัญชีของฉัน
+    </h2>
+
+    {% if msg %}
+    <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+        {{ msg }}
+    </div>
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+        <div style="background: #fdfaf2; padding: 20px; border-radius: 15px; height: fit-content;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 80px; height: 80px; background: #4a2f1d; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 10px;">
+                    {{ user.email[0].upper() }}
+                </div>
+                <p style="font-weight: bold; margin: 0;">{{ user.email }}</p>
+                <span style="font-size: 12px; color: #888; background: #eee; padding: 2px 8px; border-radius: 10px;">{{ user.role }}</span>
+            </div>
+            <hr style="border: 0; border-top: 1px solid #eee;">
+            <a href="/my_orders" style="display: block; text-decoration: none; color: #4a2f1d; padding: 10px 0;">
+                <i class="fa-solid fa-clock-rotate-left"></i> ประวัติการสั่งซื้อ
+            </a>
+            <a href="/logout" style="display: block; text-decoration: none; color: #e74c3c; padding: 10px 0;">
+                <i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ
+            </a>
+        </div>
+
+        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <h3 style="margin-top: 0;"><i class="fa-solid fa-map-location-dot"></i> ข้อมูลที่อยู่จัดส่ง</h3>
+            <form method="POST">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <label style="display: block; font-size: 13px; margin-bottom: 5px;">ชื่อ-นามสกุล</label>
+                        <input type="text" name="full_name" value="{{ address.full_name or '' }}" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 13px; margin-bottom: 5px;">เบอร์โทรศัพท์</label>
+                        <input type="text" name="phone" value="{{ address.phone or '' }}" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-size: 13px; margin-bottom: 5px;">รายละเอียดที่อยู่ (บ้านเลขที่/ถนน)</label>
+                    <textarea name="address_detail" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; height: 80px;">{{ address.address_detail or '' }}</textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <input type="text" name="sub_district" placeholder="ตำบล/แขวง" value="{{ address.sub_district or '' }}" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <input type="text" name="district" placeholder="อำเภอ/เขต" value="{{ address.district or '' }}" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+                    <input type="text" name="province" placeholder="จังหวัด" value="{{ address.province or '' }}" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <input type="text" name="postal_code" placeholder="รหัสไปรษณีย์" value="{{ address.postal_code or '' }}" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <button type="submit" style="background: #4a2f1d; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold;">
+                    บันทึกข้อมูลที่อยู่
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

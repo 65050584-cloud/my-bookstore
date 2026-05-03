@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ชำระเงิน - จำลองระบบ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body style="background-color: #fdf5e6; font-family: sans-serif; text-align: center; padding: 50px;">
+
+    <div style="background: white; max-width: 500px; margin: 0 auto; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+        <h2 style="color: #5c3a21;">ชำระเงิน (ระบบจำลอง)</h2>
+        <p>ยอดที่ต้องชำระ: <strong style="font-size: 24px; color: #b8860b;">฿{{ "{:,.2f}".format(total) }}</strong></p>
+        
+        <div style="margin: 20px 0;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=MockPayment12345" alt="Dummy QR" style="width: 200px; border: 2px solid #ddd; padding: 10px; border-radius: 10px;">
+            <p style="color: #888; font-size: 14px;">(นี่คือ QR Code จำลอง สำหรับทดสอบระบบ)</p>
+        </div>
+
+        <form action="/checkout" method="POST" enctype="multipart/form-data">
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="font-weight: bold; color: #5c3a21;">แนบหลักฐานการโอนเงิน (อัปโหลดรูปอะไรก็ได้):</label>
+                <input type="file" name="slip_image" accept="image/*" required style="display: block; width: 100%; margin-top: 10px; padding: 10px; border: 1px dashed #ccc; background: #f9f9f9;">
+            </div>
+            
+            <button type="submit" style="background-color: #4a2c1b; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;">
+                ยืนยันการชำระเงิน
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>

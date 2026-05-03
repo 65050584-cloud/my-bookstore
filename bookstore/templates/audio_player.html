@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .player-section {
+        max-width: 800px;
+        margin: 50px auto;
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        text-align: center;
+    }
+    .lyrics-box {
+        margin-top: 30px;
+        font-size: 24px;
+        line-height: 1.8;
+        text-align: left;
+        padding: 30px;
+        background: #fdfaf2;
+        border-radius: 15px;
+        border: 1px solid #e0d4c8;
+        min-height: 200px;
+    }
+    /* ตัวหนังสือปกติ */
+    .word {
+        color: #bfaea3;
+        transition: all 0.2s ease;
+        display: inline-block;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+    /* ตัวหนังสือตอนที่ AI อ่านถึง (Spotify Style) */
+    .word.active {
+        color: #5c3a21;
+        font-weight: bold;
+        transform: scale(1.1);
+    }
+    .audio-controls {
+        width: 100%;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="player-section">
+    <h2 style="color: #5c3a21;"><i class="fa-solid fa-headphones"></i> กำลังเล่น: หนังสือเสียง AI</h2>
+    <p style="color: #888;">ระบบจะไฮไลท์ข้อความตามเสียงอ่านอัตโนมัติ</p>
+
+    <audio id="audio-player" class="audio-controls" controls>
+        <source src="/static/uploads/test_audio.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="lyrics-display" class="lyrics-box">
+        <p style="color: #ccc;">กำลังโหลดเนื้อหาหนังสือ...</p>
+    </div>
+</div>
+
+<script>
+    async function initPlayer() {
+        try {
+            // 1. โหลดไฟล์เวลา (VTT) ที่เราสร้างจาก Python
+            // เปลี่ยนจากโหลด test_audio.vtt เป็นโหลดไฟล์จากฐานข้อมูล
+            const response = await fetch('{{ book.vtt_url }}');
+            const data = await response.text();
+            
+            const words = [];
+            const lines = data.split('\n');
+            let currentWord = {};
+
+            // 2. Parse ไฟล์ VTT
+            lines.forEach(line => {
+                if (line.includes('-->')) {
+                    const t = line.split('-->');
+                    currentWord.start = parseVttTime(t[0]);
+                    currentWord.end = parseVttTime(t[1]);
+                } else if (line.trim() && line !== 'WEBVTT') {
+                    currentWord.text = line.trim();
+                    words.push({...currentWord});
+                    currentWord = {};
+                }
+            });
+
+            // 3. แสดงคำลงบนหน้าจอ
+            const display = document.getElementById('lyrics-display');
+            display.innerHTML = '';
+            words.forEach((w, i) => {
+                const span = document.createElement('span');
+                span.className = 'word';
+                span.id = `word-${i}`;
+                span.innerText = w.text;
+                display.appendChild(span);
+            });
+
+            // 4. ระบบไฮไลท์ตามเวลาเสียง
+            const audio = document.getElementById('audio-player');
+            audio.addEventListener('timeupdate', () => {
+                const now = audio.currentTime;
+                words.forEach((w, i) => {
+                    const el = document.getElementById(`word-${i}`);
+                    if (now >= w.start && now <= w.end) {
+                        el.classList.add('active');
+                        // เลื่อนหน้าจอให้ตามคำที่อ่าน (Auto Scroll)
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        el.classList.remove('active');
+                    }
+                });
+            });
+
+        } catch (e) {
+            console.error("Error loading audiobook:", e);
+        }
+    }
+
+    function parseVttTime(s) {
+        const p = s.trim().split(':');
+        return parseFloat(p[0]) * 3600 + parseFloat(p[1]) * 60 + parseFloat(p[2]);
+    }
+
+    initPlayer();
+</script>
+{% endblock %}

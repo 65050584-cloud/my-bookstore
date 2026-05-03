@@ -1,0 +1,79 @@
+{% extends "admin_base.html" %}
+
+{% block admin_content %}
+<header class="admin-header" style="margin-bottom: 30px;">
+    <div class="admin-title-box">
+        <h2><i class="fa-solid fa-bell"></i> แผงควบคุมการแจ้งเตือน</h2>
+        <p>Dashboard View: 2x2 Quadrant Layout</p>
+    </div>
+</header>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+
+    <div class="widget" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 5px solid #3498db;">
+        <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+            <i class="fa-solid fa-box-open" style="color: #3498db;"></i> 1. คำสั่งซื้อ & การเงิน (ซ้ายบน)
+        </h3>
+        <div style="max-height: 350px; overflow-y: auto; padding-right: 5px;">
+            {% set has_order = false %}
+            {% for noti in notifications if noti.type == 'order' %}
+                {% set has_order = true %}
+                <div style="padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #ebf5fb; border-left: 4px solid #3498db;">
+                    <p style="margin: 0; font-size: 14px; color: #2c3e50;">{{ noti.message }}</p>
+                </div>
+            {% endfor %}
+            {% if not has_order %}<p style="text-align: center; color: #ccc; margin-top: 20px;">ไม่มีข้อมูล</p>{% endif %}
+        </div>
+    </div>
+
+    <div class="widget" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 5px solid #e67e22;">
+        <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+            <i class="fa-solid fa-triangle-exclamation" style="color: #e67e22;"></i> 2. สต๊อกใกล้หมด (ขวาบน)
+        </h3>
+        <div style="max-height: 350px; overflow-y: auto; padding-right: 5px;">
+            {% set has_stock = false %}
+            {% for noti in notifications if noti.type == 'stock' %}
+                {% set has_stock = true %}
+                <div style="padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #fef5e7; border-left: 4px solid #e67e22;">
+                    <p style="margin: 0; font-size: 14px; color: #2c3e50;">{{ noti.message }}</p>
+                </div>
+            {% endfor %}
+            {% if not has_stock %}<p style="text-align: center; color: #ccc; margin-top: 20px;">สต๊อกปกติ</p>{% endif %}
+        </div>
+    </div>
+
+    <div class="widget" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 5px solid #9b59b6;">
+        <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+            <i class="fa-solid fa-user-plus" style="color: #9b59b6;"></i> 3. สมาชิกใหม่ (ซ้ายล่าง)
+        </h3>
+        <div style="max-height: 350px; overflow-y: auto; padding-right: 5px;">
+            {% set has_user = false %}
+            {% for noti in notifications if noti.type == 'user' %}
+                {% set has_user = true %}
+                <div style="padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #f5eef8; border-left: 4px solid #9b59b6;">
+                    <p style="margin: 0; font-size: 14px; color: #2c3e50;">{{ noti.message }}</p>
+                </div>
+            {% endfor %}
+            {% if not has_user %}<p style="text-align: center; color: #ccc; margin-top: 20px;">ไม่มีสมาชิกใหม่</p>{% endif %}
+        </div>
+    </div>
+
+    <div class="widget" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 5px solid #2ecc71;">
+        <h3 style="margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+            <i class="fa-solid fa-crown" style="color: #2ecc71;"></i> 4. พรีออเดอร์ครบเป้า (ขวาล่าง)
+        </h3>
+        <div style="max-height: 350px; overflow-y: auto; padding-right: 5px;">
+            {% set has_pre = false %}
+            {% for noti in notifications if noti.type == 'preorder_success' %}
+                {% set has_pre = true %}
+                <div style="padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #eafaf1; border-left: 4px solid #2ecc71;">
+                    <strong style="color: #27ae60; font-size: 14px;">{{ noti.message }}</strong>
+                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #7f8c8d;">สถานะ: พร้อมดำเนินการ</p>
+                </div>
+            {% endfor %}
+            {% if not has_pre %}<p style="text-align: center; color: #ccc; margin-top: 20px;">ยังไม่มีรายการ</p>{% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
