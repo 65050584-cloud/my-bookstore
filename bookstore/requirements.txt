@@ -1,4 +1,0 @@
-Flask
-gunicorn
-supabase
-httpx>=0.28.1
